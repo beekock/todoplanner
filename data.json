@@ -1,0 +1,6 @@
+[
+  { "alias": "finish 1st todo", "isDone": false, "category": ["main"] },
+  { "alias": "finish 2nd todo", "isDone": false, "category": ["main", "optional"] },
+  { "alias": "delete todo", "isDone": false, "category": ["main"] },
+  { "alias": "add todo", "isDone": false, "category": ["optional"] }
+]

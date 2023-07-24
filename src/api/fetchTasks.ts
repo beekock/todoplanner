@@ -1,13 +1,11 @@
-import axios from 'axios';
-
-export type Category = {
-  title: string;
-  tasks: Task[];
-};
 export type Task = {
   alias: string;
-  done: boolean;
+  isDone: boolean;
+  category: string[];
+  description?: string;
 };
 export const fetchTasks = async () => {
-  return (await axios.get<Category[]>('https://6389fa094eccb986e89fec00.mockapi.io/tasks')).data;
+  const response = await fetch('https://6389fa094eccb986e89fec00.mockapi.io/tasks');
+  const tasks: Task[] = await response.json();
+  return tasks;
 };

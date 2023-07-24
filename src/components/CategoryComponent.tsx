@@ -1,27 +1,27 @@
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
-import React, { Dispatch, SetStateAction } from 'react';
-import { Category } from '../api/fetchTasks';
+import React from 'react';
+
 import TaskStore from '../store/TaskStore';
 
 type Props = {
-  category: Category;
+  category: string;
+  key: string;
 };
 
 const CategoryComponent: React.FC<Props> = observer(({ category }) => {
-  const { filterByCategory, setActiveCategory, activeCategory } = TaskStore;
-  const onClickCategory = (title: string) => {
-    setActiveCategory(category.title);
-    filterByCategory(category.title);
+  const { setActiveCategory, activeCategory } = TaskStore;
+  const onClickCategory = (categoryName: string) => {
+    setActiveCategory(categoryName);
   };
   return (
     <div
       className={clsx(
-        activeCategory === category.title ? 'bg-slate-300' : '',
+        activeCategory === category ? 'bg-slate-300' : '',
         'cursor-pointer hover:bg-slate-300 transition-colors mb-2 px-1',
       )}
-      onClick={() => onClickCategory(category.title)}>
-      {category.title}
+      onClick={() => onClickCategory(category)}>
+      {category}
     </div>
   );
 });

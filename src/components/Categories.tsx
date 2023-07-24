@@ -5,17 +5,18 @@ import ico from '../assets/categories_ico.svg';
 import { observer } from 'mobx-react-lite';
 import clsx from 'clsx';
 import AddCategoryModal from './AddCategoryModal';
+import { useAutoAnimate } from '@formkit/auto-animate/react';
 
 const Categories: React.FC = observer(() => {
-  const { categories, resetFilter, activeCategory, setActiveCategory } = TaskStore;
+  const { categories, activeCategory, setActiveCategory } = TaskStore;
   const [isModal, setModal] = useState(false);
+  const [parent] = useAutoAnimate();
 
   const onClickReset = () => {
     setActiveCategory('');
-    resetFilter();
   };
   return (
-    <div className=" py-10 border-r w-full max-w-[200px] text-start ">
+    <div className=" py-10 border-r w-full max-w-[200px] text-start " ref={parent}>
       <div
         className={clsx(
           !activeCategory && 'bg-slate-300',
@@ -26,7 +27,7 @@ const Categories: React.FC = observer(() => {
         <h3 className="">Все задачи</h3>
       </div>
       {categories.map((category) => (
-        <CategoryComponent category={category} key={category.title} />
+        <CategoryComponent category={category} key={category} />
       ))}
       {isModal ? (
         <AddCategoryModal setModal={setModal} />

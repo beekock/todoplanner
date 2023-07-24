@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
-import { Category, fetchTasks } from '../api/fetchTasks';
+import { fetchTasks, Task } from '../api/fetchTasks';
+import { fetchCategories } from '../api/fetchCategories';
 
 export enum FetchState {
   LOADING = 'pending',
@@ -8,80 +9,42 @@ export enum FetchState {
   ERROR = 'rejected',
 }
 class TaskStore {
-  categories: Category[] = [];
-  fetchState: FetchState = FetchState.LOADING;
-  filteredTasks: Category[] = [];
-  activeCategory: string = '';
+  @observable tasks: Task[] = [];
+  @observable categories: string[] = [];
+  @observable initialTasks: Task[] = [];
+  @observable activeCategory: string = '';
   constructor() {
-    makeObservable(this, {
-      categories: observable,
-      filteredTasks: observable,
-      activeCategory: observable,
-      allTasks: computed,
-      fetchState: observable,
-      fetchTasks: action,
-      deleteTask: action,
-      addCategory: action,
-    });
+    makeObservable(this);
   }
 
-  fetchTasks = async () => {
+  @action getData = async () => {
     try {
-      const res = await fetchTasks();
+      const tasks = await fetchTasks();
+      const categories = await fetchCategories();
       runInAction(() => {
-        this.categories = res;
-        this.fetchState = FetchState.SUCCESS;
+        this.tasks = tasks;
+        this.categories = categories;
       });
-    } catch (e) {
-      runInAction(() => {
-        this.fetchState = FetchState.ERROR;
-      });
-    }
+    } catch (e) {}
   };
-  setActiveCategory = (title: string) => {
-    this.activeCategory = title;
-  };
-  get allTasks() {
-    if (this.filteredTasks.length === 0) {
-      this.filteredTasks = this.categories;
-    }
-    return this.filteredTasks.flatMap((category: Category) => category.tasks);
+  @computed get filteredTasks() {
+    return this.activeCategory
+      ? this.tasks.filter((task) => task.category.includes(this.activeCategory))
+      : this.tasks;
   }
-  deleteTask = (alias: string) => {
-    if (window.confirm('Вы действительно хотите удалить задачу?')) {
-      this.categories = this.filteredTasks.map((category) => {
-        return {
-          ...category,
-          tasks: category.tasks.filter((task) => task.alias !== alias),
-        };
-      });
-      this.filteredTasks = this.categories;
-    }
+  @action setActiveCategory = (category: string) => {
+    this.activeCategory = category;
   };
-  addTask = (title: string, alias: string) => {
-    const category = this.filteredTasks.find((category) => category.title === title);
-    const taskExists = category?.tasks.some((task) => task.alias === alias);
-    if (taskExists) return alert('Такая задача уже есть, введите другое имя');
-    if (category) {
-      category.tasks.push({
-        alias: alias,
-        done: false,
-      });
-    }
+  @action deleteTask = (task: Task) => {
+    this.tasks = this.tasks.filter((item) => item !== task);
   };
-  addCategory = (title: string) => {
-    this.filteredTasks.push({
-      title: title,
-      tasks: [],
-    });
+  @action addTask = (alias: string, category: string[]) => {
+    this.tasks = [...this.tasks, { alias, isDone: false, category: category }];
   };
-  filterByCategory = (title: string) => {
-    this.filteredTasks = this.categories.filter((category) => category.title === title);
-    console.log(this.filteredTasks);
-  };
-  resetFilter = () => {
-    this.filteredTasks = this.categories;
-    console.log(this.filteredTasks);
+  @action addCategory = (category: string) => {
+    this.categories.includes(category)
+      ? alert('Такая категория уже есть')
+      : (this.categories = [...this.categories, category]);
   };
 }
 export default new TaskStore();

@@ -9,9 +9,9 @@ import ToDoPage from './pages/ToDoPage';
 import TaskStore from './store/TaskStore';
 
 function App() {
-  const { fetchTasks } = TaskStore;
+  const { getData } = TaskStore;
   useEffect(() => {
-    fetchTasks();
+    getData();
   }, []);
   return (
     <div className="h-full max-w-[900px] my-0 mx-auto border border-black rounded-sm flex flex-col">

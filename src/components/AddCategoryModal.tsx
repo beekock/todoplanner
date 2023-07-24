@@ -11,9 +11,9 @@ const AddCategoryModal: React.FC<Props> = ({ setModal }) => {
   const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
-  const handleSubmit = (title: string) => {
+  const handleSubmit = (alias: string) => {
     setModal(false);
-    addCategory(inputValue);
+    addCategory(alias);
   };
   return (
     <div className="">
