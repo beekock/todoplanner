@@ -17,6 +17,9 @@ class TaskStore {
     makeObservable(this);
   }
 
+  private generateId = () => {
+    return Math.round(Math.random() * 10e2);
+  };
   @action getData = async () => {
     try {
       const tasks = await fetchTasks();
@@ -39,12 +42,30 @@ class TaskStore {
     this.tasks = this.tasks.filter((item) => item !== task);
   };
   @action addTask = ({ alias, categories }: { alias: string; categories: string[] }) => {
-    this.tasks = [...this.tasks, { alias: alias, isDone: false, categories: categories }];
+    this.tasks = [
+      ...this.tasks,
+      {
+        id: this.generateId(),
+        alias: alias,
+        isDone: false,
+        categories: categories,
+        description: '',
+      },
+    ];
   };
   @action addCategory = (category: string) => {
     this.categories.includes(category)
       ? alert('Такая категория уже есть')
       : (this.categories = [...this.categories, category]);
+  };
+  @action updateTask = (id: number, { alias, categories, description }: Task) => {
+    const index = this.tasks.findIndex((target) => target.id === id);
+    if (index !== -1) {
+      this.tasks[index].alias = alias;
+      this.tasks[index].categories = categories;
+      this.tasks[index].description = description;
+    }
+    console.log('success', index);
   };
 }
 export default new TaskStore();
