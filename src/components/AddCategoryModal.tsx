@@ -1,31 +1,40 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { Dispatch, SetStateAction } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import TaskStore from '../store/TaskStore';
 
 type Props = {
   setModal: Dispatch<SetStateAction<boolean>>;
 };
-
+interface FormData {
+  category: string;
+}
 const AddCategoryModal: React.FC<Props> = ({ setModal }) => {
-  const [inputValue, setInputValue] = useState('');
-  const { addCategory } = TaskStore;
-  const onChangeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setInputValue(e.target.value);
-  };
-  const handleSubmit = (alias: string) => {
+  const { addCategory, categories } = TaskStore;
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({ mode: 'onBlur' });
+  const onSubmit: SubmitHandler<FormData> = (data) => {
+    addCategory(data.category);
     setModal(false);
-    addCategory(alias);
   };
   return (
     <div className="">
-      <input
-        type="text"
-        placeholder="Введите имя категории"
-        value={inputValue}
-        onChange={(e) => onChangeInput(e)}
-      />
-      <button type="submit" onClick={() => handleSubmit(inputValue)}>
-        Добавить
-      </button>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        {' '}
+        <input
+          type="text"
+          placeholder="Введите имя категории"
+          {...register('category', {
+            validate: (value) =>
+              !categories.includes(value) || 'Категория с таким именем уже существует',
+            required: 'Поле обязательно для заполнения',
+          })}
+        />
+        {errors?.category && <p className="text-sm text-red-800">{errors.category.message}</p>}
+        <button type="submit">Добавить</button>
+      </form>
     </div>
   );
 };

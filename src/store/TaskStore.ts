@@ -29,7 +29,7 @@ class TaskStore {
   };
   @computed get filteredTasks() {
     return this.activeCategory
-      ? this.tasks.filter((task) => task.category.includes(this.activeCategory))
+      ? this.tasks.filter((task) => task.categories.includes(this.activeCategory))
       : this.tasks;
   }
   @action setActiveCategory = (category: string) => {
@@ -38,8 +38,8 @@ class TaskStore {
   @action deleteTask = (task: Task) => {
     this.tasks = this.tasks.filter((item) => item !== task);
   };
-  @action addTask = (alias: string, category: string[]) => {
-    this.tasks = [...this.tasks, { alias, isDone: false, category: category }];
+  @action addTask = ({ alias, categories }: { alias: string; categories: string[] }) => {
+    this.tasks = [...this.tasks, { alias: alias, isDone: false, categories: categories }];
   };
   @action addCategory = (category: string) => {
     this.categories.includes(category)

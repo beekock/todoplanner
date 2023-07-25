@@ -1,7 +1,7 @@
 export type Task = {
   alias: string;
   isDone: boolean;
-  category: string[];
+  categories: string[];
   description?: string;
 };
 export const fetchTasks = async () => {
