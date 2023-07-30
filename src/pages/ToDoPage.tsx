@@ -5,10 +5,15 @@ import Categories from '../components/Categories';
 import TaskComponent from '../components/TaskComponent';
 import TaskStore from '../store/TaskStore';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import CompletedTasksComponent from '../components/CompletedTasksComponent';
+import DoneTaskToggler from '../components/DoneTaskToggler';
+import { useSnackbar } from 'notistack';
 const ToDoPage: React.FC = observer(() => {
   const { filteredTasks } = TaskStore;
   const [parent] = useAutoAnimate();
   const [isModal, setModal] = useState(false);
+  const [isDoneOpen, setDoneOpen] = useState(false);
+
   return (
     <section className="flex justify-between ">
       <Categories />
@@ -22,6 +27,10 @@ const ToDoPage: React.FC = observer(() => {
           <AddModal setModal={setModal} />
         ) : (
           <button onClick={() => setModal(true)}>+ Добавить задачу</button>
+        )}
+        <DoneTaskToggler toggleDoneOpened={setDoneOpen} opened={isDoneOpen} />
+        {isDoneOpen && (
+          <CompletedTasksComponent toggleDoneOpened={setDoneOpen} opened={isDoneOpen} />
         )}
       </div>
     </section>

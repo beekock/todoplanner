@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import React, { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { Task } from '../api/fetchTasks';
@@ -17,15 +18,17 @@ interface FormData {
 const TaskCard: React.FC<Props> = ({ task, setCard }) => {
   const { categories, updateTask } = TaskStore;
   const [isEdit, setEdit] = useState(false);
+  const { enqueueSnackbar } = useSnackbar();
   const { register, handleSubmit } = useForm<FormData>({
     defaultValues: { alias: task.alias, description: task.description },
   });
   const onSubmit: SubmitHandler<FormData> = (data) => {
     updateTask(task.id, data);
     setCard(false);
+    enqueueSnackbar('Задача успешно изменена', { variant: 'success' });
   };
   return (
-    <div className="absolute top-1/2 left-1/4 border-1 border-black bg-blue-300 w-[250px] h-[350px] p-3 flex flex-col justify-between text-left">
+    <div className="absolute opacity-100 top-1/2 left-1/4 border-1 border-black bg-blue-300 w-[250px] h-[350px] p-3 flex flex-col justify-between text-left">
       <div className="relative">
         <button
           className="rounded-full border border-black w-8 h-8 absolute top-0 right-0 hover:bg-blue-400 transition-colors"
@@ -52,18 +55,17 @@ const TaskCard: React.FC<Props> = ({ task, setCard }) => {
         </label>
         <p> Категории задачи</p>
         {categories.map((category, index) => (
-          <>
+          <React.Fragment key={index}>
             {' '}
             <input
               type="checkbox"
               value={category}
-              key={index}
               disabled={!isEdit}
-              defaultChecked={task.categories.includes(category)}
+              defaultChecked={Array.isArray(task.categories) && task.categories.includes(category)}
               {...register('categories')}
             />
-            <label key={Math.random() * 10e2}>{category}</label>
-          </>
+            <label>{category}</label>
+          </React.Fragment>
         ))}
         {isEdit && (
           <button

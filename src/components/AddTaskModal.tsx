@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import React, { Dispatch, SetStateAction } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import TaskStore from '../store/TaskStore';
@@ -11,6 +12,7 @@ interface FormData {
 }
 const AddModal: React.FC<Props> = ({ setModal }) => {
   const { addTask, activeCategory, categories } = TaskStore;
+  const { enqueueSnackbar } = useSnackbar();
   const {
     register,
     handleSubmit,
@@ -19,6 +21,7 @@ const AddModal: React.FC<Props> = ({ setModal }) => {
   const onSubmit: SubmitHandler<FormData> = (data) => {
     setModal(false);
     addTask(data);
+    enqueueSnackbar('Задача успешно добавлена', { variant: 'success' });
   };
   return (
     <div className="border w-[200px] mx-auto my-3 flex flex-col h-[200px] justify-between rounded-md absolute top-[50%] left-[50%] z-10 bg-blue-400 p-1">

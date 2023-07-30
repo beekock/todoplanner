@@ -1,3 +1,4 @@
+import { useSnackbar } from 'notistack';
 import React from 'react';
 import { Task } from '../api/fetchTasks';
 import TaskStore from '../store/TaskStore';
@@ -8,13 +9,15 @@ type Props = {
 };
 
 const DeleteConfirmationModal: React.FC<Props> = ({ task, setModal }) => {
+  const { enqueueSnackbar } = useSnackbar();
   const { deleteTask } = TaskStore;
   const onConfirm = () => {
     deleteTask(task);
     setModal(false);
+    enqueueSnackbar('Задача успешно удалена', { variant: 'success' });
   };
   return (
-    <div className="absolute top-1/2 left-1/4 z-50 w-[250px] h-[250px] border border-black rounded-md bg-orange-400 flex flex-col justify-between p-5">
+    <div className="absolute top-1/2 left-1/4 z-50 w-[250px] h-[250px] border border-black rounded-md bg-orange-400 flex flex-col justify-between p-5 opacity-100">
       <h4>Вы действительно хотите удалить задачу?</h4>
       <div className="flex justify-between">
         {' '}
