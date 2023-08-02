@@ -30,11 +30,11 @@ class TaskStore {
       try {
         const tasks = await fetchTasks();
         const categories = await fetchCategories();
-        console.log('ABOBAABB');
         runInAction(() => {
           this.tasks = tasks;
           this.categories = categories;
-          this.fetchStatus = 'success';
+          this.syncWithLS('categories', this.categories);
+          this.syncWithLS('tasks', this.tasks);
         });
       } catch (e) {
         runInAction(() => {
@@ -88,6 +88,18 @@ class TaskStore {
     this.categories.includes(category)
       ? alert('Такая категория уже есть')
       : (this.categories = [...this.categories, category]);
+    this.syncWithLS('categories', this.categories);
+  };
+  @action deleteCategory = (title: string) => {
+    this.tasks = this.tasks.map((task) => {
+      if (Array.isArray(task.categories)) {
+        task.categories = task.categories?.filter((category) => category !== title);
+      }
+      return task;
+    });
+    this.syncWithLS('tasks', this.tasks);
+    this.categories = this.categories.filter((category) => category !== title);
+
     this.syncWithLS('categories', this.categories);
   };
   @action toggleIsDone = (id: number) => {

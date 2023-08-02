@@ -4,8 +4,9 @@ import CategoryComponent from './CategoryComponent';
 import ico from '../assets/categories_ico.svg';
 import { observer } from 'mobx-react-lite';
 import clsx from 'clsx';
-import AddCategoryModal from './AddCategoryModal';
+import AddCategoryModal from './modals/AddCategoryModal';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
+import { createPortal } from 'react-dom';
 
 const Categories: React.FC = observer(() => {
   const { categories, activeCategory, setActiveCategory } = TaskStore;
@@ -16,7 +17,7 @@ const Categories: React.FC = observer(() => {
     setActiveCategory('');
   };
   return (
-    <div className=" py-10 border-r w-full max-w-[200px] text-start " ref={parent}>
+    <div className=" py-10 border-r w-full max-w-[250px] text-start " ref={parent}>
       <div
         className={clsx(
           !activeCategory && 'bg-slate-300',
@@ -30,7 +31,7 @@ const Categories: React.FC = observer(() => {
         <CategoryComponent category={category} key={category} />
       ))}
       {isModal ? (
-        <AddCategoryModal setModal={setModal} />
+        createPortal(<AddCategoryModal setModal={setModal} />, document.body)
       ) : (
         <button
           onClick={() => setModal(true)}

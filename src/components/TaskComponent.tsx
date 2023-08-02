@@ -1,12 +1,12 @@
 import TaskStore from '../store/TaskStore';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Task } from '../api/fetchTasks';
+import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
+import TaskCard from './modals/TaskCard';
 
-import DeleteConfirmationModal from './DeleteConfirmationModal';
-import TaskCard from './TaskCard';
-import { useSnackbar } from 'notistack';
 import clsx from 'clsx';
+import { createPortal } from 'react-dom';
 
 type Props = {
   task: Task;
@@ -41,8 +41,9 @@ const TaskComponent: React.FC<Props> = observer(({ task }) => {
           X
         </button>
       </div>
-      {isModal && <DeleteConfirmationModal task={task} setModal={setModal} />}
-      {isCard && <TaskCard task={task} setCard={setCard} />}
+      {isModal &&
+        createPortal(<DeleteConfirmationModal data={task} setModal={setModal} />, document.body)}
+      {isCard && createPortal(<TaskCard task={task} setCard={setCard} />, document.body)}
     </>
   );
 });

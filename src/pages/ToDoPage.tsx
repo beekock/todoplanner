@@ -1,13 +1,14 @@
 import { observer } from 'mobx-react-lite';
 import React, { useState } from 'react';
-import AddModal from '../components/AddTaskModal';
+import AddTaskModal from '../components/modals/AddTaskModal';
 import Categories from '../components/Categories';
 import TaskComponent from '../components/TaskComponent';
 import TaskStore from '../store/TaskStore';
 import { useAutoAnimate } from '@formkit/auto-animate/react';
 import CompletedTasksComponent from '../components/CompletedTasksComponent';
 import DoneTaskToggler from '../components/DoneTaskToggler';
-import { useSnackbar } from 'notistack';
+import { createPortal } from 'react-dom';
+
 const ToDoPage: React.FC = observer(() => {
   const { filteredTasks } = TaskStore;
   const [parent] = useAutoAnimate();
@@ -15,7 +16,7 @@ const ToDoPage: React.FC = observer(() => {
   const [isDoneOpen, setDoneOpen] = useState(false);
 
   return (
-    <section className="flex justify-between ">
+    <section className="flex justify-between h-full">
       <Categories />
       <div className="w-full p-5" ref={parent}>
         {filteredTasks.length > 0 ? (
@@ -24,7 +25,7 @@ const ToDoPage: React.FC = observer(() => {
           <h4> Нет задач</h4>
         )}
         {isModal ? (
-          <AddModal setModal={setModal} />
+          createPortal(<AddTaskModal setModal={setModal} />, document.body)
         ) : (
           <button onClick={() => setModal(true)}>+ Добавить задачу</button>
         )}

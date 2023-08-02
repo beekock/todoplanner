@@ -13,7 +13,7 @@ const DoneTaskToggler: React.FC<Props> = ({ opened, toggleDoneOpened }) => {
   return (
     <div className="flex mt-5">
       {' '}
-      <h3>{`Completed tasks (${doneTasks.length})`}</h3>
+      <h3 className="mb-5">{`Completed tasks (${doneTasks.length})`}</h3>
       <img
         src={arrow}
         alt="toggleDoneIco"
