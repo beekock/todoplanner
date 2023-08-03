@@ -1,7 +1,8 @@
-import { action, computed, makeObservable, observable, runInAction, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
 import { fetchTasks, Task } from '../api/fetchTasks';
 import { fetchCategories } from '../api/fetchCategories';
+import { arrayBuffer } from 'stream/consumers';
 
 class TaskStore {
   @observable tasks: Task[] = [];
@@ -18,6 +19,7 @@ class TaskStore {
   };
   private syncWithLS = (key: string, data: Task[] | string[]) => {
     localStorage.setItem(key, JSON.stringify(data));
+    console.log(this.tasks);
   };
   @action getData = async () => {
     this.fetchStatus = 'pending';
@@ -45,22 +47,12 @@ class TaskStore {
   };
   @computed get filteredTasks() {
     return this.activeCategory
-      ? this.tasks.filter(
-          (task) =>
-            Array.isArray(task.categories) &&
-            task.categories?.includes(this.activeCategory) &&
-            !task.isDone,
-        )
+      ? this.tasks.filter((task) => task.categories.includes(this.activeCategory) && !task.isDone)
       : this.tasks.filter((task) => !task.isDone);
   }
   @computed get doneTasks() {
     return this.activeCategory
-      ? this.tasks.filter(
-          (task) =>
-            Array.isArray(task.categories) &&
-            task.categories?.includes(this.activeCategory) &&
-            task.isDone,
-        )
+      ? this.tasks.filter((task) => task.categories?.includes(this.activeCategory) && task.isDone)
       : this.tasks.filter((task) => task.isDone);
   }
   @action setActiveCategory = (category: string) => {
@@ -76,9 +68,9 @@ class TaskStore {
       ...this.tasks,
       {
         id: this.generateId(),
-        alias: alias,
+        alias,
         isDone: false,
-        categories: categories,
+        categories,
         description: '',
       },
     ];
@@ -92,9 +84,8 @@ class TaskStore {
   };
   @action deleteCategory = (title: string) => {
     this.tasks = this.tasks.map((task) => {
-      if (Array.isArray(task.categories)) {
-        task.categories = task.categories?.filter((category) => category !== title);
-      }
+      task.categories = task.categories?.filter((category) => category !== title);
+
       return task;
     });
     this.syncWithLS('tasks', this.tasks);
@@ -111,6 +102,7 @@ class TaskStore {
   };
   @action updateTask = (id: number, { alias, categories, description }: Task) => {
     const index = this.tasks.findIndex((target) => target.id === id);
+    if (Array.isArray(categories)) categories = [...categories];
     if (index !== -1) {
       this.tasks[index].alias = alias;
       this.tasks[index].categories = categories;

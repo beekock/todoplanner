@@ -1,8 +1,10 @@
 import { useSnackbar } from 'notistack';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { isAccessor } from 'typescript';
 import { Task } from '../../api/fetchTasks';
 import TaskStore from '../../store/TaskStore';
+import { useOnClickOutside } from '../../utils/useOnClickOutside';
 
 type Props = {
   task: Task;
@@ -18,6 +20,8 @@ interface FormData {
 const TaskCard: React.FC<Props> = ({ task, setCard }) => {
   const { categories, updateTask } = TaskStore;
   const [isEdit, setEdit] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(modalRef, () => setCard(false));
   const { enqueueSnackbar } = useSnackbar();
   const { register, handleSubmit } = useForm<FormData>({
     defaultValues: { alias: task.alias, description: task.description },
@@ -27,9 +31,12 @@ const TaskCard: React.FC<Props> = ({ task, setCard }) => {
     setCard(false);
     enqueueSnackbar('Задача успешно изменена', { variant: 'success' });
   };
+
   return (
-    <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
-      <div className="mx-auto border-1 border-black bg-blue-300 w-[270px] h-[350px] p-3 flex flex-col justify-between text-left rounded-md">
+    <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center backdrop-blur-xs">
+      <div
+        className="mx-auto border-1 border-black bg-blue-300 w-[270px] h-[350px] p-3 flex flex-col justify-between text-left rounded-md"
+        ref={modalRef}>
         <div className="relative">
           <button
             className="rounded-full border border-black w-8 h-8 absolute top-0 right-0 hover:bg-blue-400 transition-colors"
@@ -62,9 +69,7 @@ const TaskCard: React.FC<Props> = ({ task, setCard }) => {
                 type="checkbox"
                 value={category}
                 disabled={!isEdit}
-                defaultChecked={
-                  Array.isArray(task.categories) && task.categories.includes(category)
-                }
+                defaultChecked={task.categories.includes(category)}
                 {...register('categories')}
               />
               <label>{category}</label>

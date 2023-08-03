@@ -1,31 +1,37 @@
 import { useSnackbar } from 'notistack';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import TaskStore from '../../store/TaskStore';
+import { useOnClickOutside } from '../../utils/useOnClickOutside';
 
 type Props = {
   setModal: Dispatch<SetStateAction<boolean>>;
 };
 interface FormData {
   alias: string;
-  categories: [];
+  categories: string[];
 }
 const AddModal: React.FC<Props> = ({ setModal }) => {
   const { addTask, activeCategory, categories } = TaskStore;
   const { enqueueSnackbar } = useSnackbar();
+  const modalRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(modalRef, () => setModal(false));
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<FormData>({ mode: 'onBlur' });
-  const onSubmit: SubmitHandler<FormData> = (data) => {
+  const onSubmit: SubmitHandler<FormData> = ({ alias, categories }) => {
+    if (!Array.isArray(categories)) categories = [categories];
     setModal(false);
-    addTask(data);
+    addTask({ alias, categories });
     enqueueSnackbar('Задача успешно добавлена', { variant: 'success' });
   };
   return (
-    <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
-      <div className="border max-h-[300px] max-w-[300px] w-full h-full mx-auto my-3 flex flex-col rounded-md z-10 bg-blue-400 p-1">
+    <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center backdrop-blur-xs">
+      <div
+        className="border max-h-[300px] max-w-[300px] w-full h-full mx-auto my-3 flex flex-col rounded-md z-10 bg-blue-400 p-1 "
+        ref={modalRef}>
         <button
           onClick={() => setModal(false)}
           className="mr-2 ml-auto cursor-pointer w-10 h-10 flex items-center justify-center border border-black rounded-full">

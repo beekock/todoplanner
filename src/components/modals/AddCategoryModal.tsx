@@ -1,7 +1,8 @@
 import { useSnackbar } from 'notistack';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import TaskStore from '../../store/TaskStore';
+import { useOnClickOutside } from '../../utils/useOnClickOutside';
 
 type Props = {
   setModal: Dispatch<SetStateAction<boolean>>;
@@ -12,6 +13,8 @@ interface FormData {
 const AddCategoryModal: React.FC<Props> = ({ setModal }) => {
   const { addCategory, categories } = TaskStore;
   const { enqueueSnackbar } = useSnackbar();
+  const modalRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(modalRef, () => setModal(false));
   const {
     register,
     handleSubmit,
@@ -23,8 +26,10 @@ const AddCategoryModal: React.FC<Props> = ({ setModal }) => {
     enqueueSnackbar('Категория успешно добавлена', { variant: 'success' });
   };
   return (
-    <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
-      <div className="mx-auto border border-black rounded-md p-2 w-[250px] max-h-[200px] h-full z-100 bg-blue-400 flex flex-col justify-between">
+    <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center backdrop-blur-xs">
+      <div
+        className="mx-auto border border-black rounded-md p-2 w-[250px] max-h-[200px] h-full z-100 bg-blue-400 flex flex-col justify-between"
+        ref={modalRef}>
         <button
           className="mr-0 ml-auto w-10 h-10 rounded-full border border-black items-center flex justify-center hover:bg-blue-500 transition-colors"
           onClick={() => setModal(false)}>

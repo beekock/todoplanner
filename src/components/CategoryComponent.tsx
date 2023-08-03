@@ -8,7 +8,7 @@ import DeleteConfirmationModal from './modals/DeleteConfirmationModal';
 
 type Props = {
   category: string;
-  key: string;
+  key: number;
 };
 
 const CategoryComponent: React.FC<Props> = observer(({ category }) => {

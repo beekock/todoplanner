@@ -17,7 +17,7 @@ const Categories: React.FC = observer(() => {
     setActiveCategory('');
   };
   return (
-    <div className=" py-10 border-r w-full max-w-[250px] text-start " ref={parent}>
+    <div className=" py-5 border-r w-full max-w-[250px] text-start " ref={parent}>
       <div
         className={clsx(
           !activeCategory && 'bg-slate-300',
@@ -27,8 +27,8 @@ const Categories: React.FC = observer(() => {
         <img src={ico} alt="categories-ico" className="w-4 h-4 my-1 mx-1" />
         <h3 className="">Все задачи</h3>
       </div>
-      {categories.map((category) => (
-        <CategoryComponent category={category} key={category} />
+      {categories.map((category, index) => (
+        <CategoryComponent category={category} key={index} />
       ))}
       {isModal ? (
         createPortal(<AddCategoryModal setModal={setModal} />, document.body)

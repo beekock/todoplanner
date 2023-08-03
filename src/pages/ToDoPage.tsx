@@ -20,7 +20,7 @@ const ToDoPage: React.FC = observer(() => {
       <Categories />
       <div className="w-full p-5" ref={parent}>
         {filteredTasks.length > 0 ? (
-          filteredTasks.map((task) => <TaskComponent task={task} key={task.alias} />)
+          filteredTasks.map((task) => <TaskComponent task={task} key={task.id} />)
         ) : (
           <h4> Нет задач</h4>
         )}

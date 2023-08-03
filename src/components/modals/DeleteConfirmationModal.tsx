@@ -1,7 +1,8 @@
 import { useSnackbar } from 'notistack';
-import React from 'react';
+import React, { useRef } from 'react';
 import { Task } from '../../api/fetchTasks';
 import TaskStore from '../../store/TaskStore';
+import { useOnClickOutside } from '../../utils/useOnClickOutside';
 
 type Props = {
   data: Task | string;
@@ -11,7 +12,8 @@ type Props = {
 const DeleteConfirmationModal: React.FC<Props> = ({ data, setModal }) => {
   const { enqueueSnackbar } = useSnackbar();
   const { deleteTask, deleteCategory } = TaskStore;
-
+  const modalRef = useRef<HTMLDivElement>(null);
+  useOnClickOutside(modalRef, () => setModal(false));
   const onConfirm = () => {
     if (typeof data !== 'string') {
       deleteTask(data);
@@ -25,8 +27,10 @@ const DeleteConfirmationModal: React.FC<Props> = ({ data, setModal }) => {
   };
 
   return (
-    <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center">
-      <div className="mx-auto z-50 w-[250px] h-[250px] border border-black rounded-md bg-orange-400 flex flex-col justify-between p-5 opacity-100">
+    <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center backdrop-blur-xs">
+      <div
+        className="mx-auto z-50 w-[250px] h-[250px] border border-black rounded-md bg-orange-400 flex flex-col justify-between p-5 opacity-100 "
+        ref={modalRef}>
         <h4>{`Вы действительно хотите удалить ${
           typeof data !== 'string' ? 'задачу' : 'категорию'
         }?`}</h4>
