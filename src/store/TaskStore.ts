@@ -2,7 +2,6 @@ import { action, computed, makeObservable, observable, runInAction } from 'mobx'
 
 import { fetchTasks, Task } from '../api/fetchTasks';
 import { fetchCategories } from '../api/fetchCategories';
-import { arrayBuffer } from 'stream/consumers';
 
 class TaskStore {
   @observable tasks: Task[] = [];
@@ -19,7 +18,6 @@ class TaskStore {
   };
   private syncWithLS = (key: string, data: Task[] | string[]) => {
     localStorage.setItem(key, JSON.stringify(data));
-    console.log(this.tasks);
   };
   @action getData = async () => {
     this.fetchStatus = 'pending';
@@ -61,6 +59,7 @@ class TaskStore {
   };
   @action deleteTask = (task: Task) => {
     this.tasks = this.tasks.filter((item) => item !== task);
+    this.setActiveCategory('');
     this.syncWithLS('tasks', this.tasks);
   };
   @action addTask = ({ alias, categories }: { alias: string; categories: string[] }) => {

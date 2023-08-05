@@ -1,7 +1,7 @@
 import { SnackbarProvider } from 'notistack';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Route, Routes } from 'react-router-dom';
-import BurgerMenu from './components/BurgerMenu';
+
 import Footer from './components/Footer';
 import Header from './components/Header';
 import CalendarPage from './pages/CalendarPage';
@@ -16,16 +16,7 @@ function App() {
   useEffect(() => {
     getData();
   }, []);
-  const [isMobile, setIsMobile] = useState(window.matchMedia('(max-width: 767px)').matches);
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.matchMedia('(max-width: 767px)').matches);
-    };
-    window.addEventListener('resize', handleResize);
-    return () => {
-      window.removeEventListener('resize', handleResize);
-    };
-  }, []);
+
   return (
     <div
       className="h-full max-w-[1076px] my-0 mx-auto border border-black rounded-sm flex flex-col"
@@ -34,7 +25,7 @@ function App() {
         autoHideDuration={5000}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         {' '}
-        {isMobile ? <BurgerMenu /> : <Header />}
+        <Header />
         <main className="h-full flex-grow">
           <Routes>
             <Route path="/" element={<HomePage />} />

@@ -1,6 +1,6 @@
 import clsx from 'clsx';
 import { observer } from 'mobx-react-lite';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 import TaskStore from '../store/TaskStore';
@@ -14,11 +14,13 @@ type Props = {
 const CategoryComponent: React.FC<Props> = observer(({ category }) => {
   const { setActiveCategory, activeCategory } = TaskStore;
   const [isModal, setModal] = useState(false);
+  const deleteRef = useRef(null);
+
   const onClickCategory = (categoryName: string) => {
     setActiveCategory(categoryName);
   };
-  const onClickDeleteCategory = () => {
-    setModal(true);
+  const onClickDeleteCategory = (): void => {
+    if (deleteRef.current) setModal(true);
   };
   return (
     <div
@@ -28,12 +30,12 @@ const CategoryComponent: React.FC<Props> = observer(({ category }) => {
       )}
       onClick={() => onClickCategory(category)}>
       <div className="">{category}</div>
-      <div>
-        <span
+      <div ref={deleteRef}>
+        <button
           className="cursor-pointer hover:font-bold transition-all"
           onClick={() => onClickDeleteCategory()}>
           X
-        </span>
+        </button>
       </div>
       {isModal &&
         createPortal(
