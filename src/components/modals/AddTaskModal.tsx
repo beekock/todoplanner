@@ -1,8 +1,11 @@
+import { observer } from 'mobx-react-lite';
 import { useSnackbar } from 'notistack';
 import React, { Dispatch, SetStateAction, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import CalendarStore from '../../store/CalendarStore';
 import TaskStore from '../../store/TaskStore';
 import { useOnClickOutside } from '../../utils/useOnClickOutside';
+import Month from '../Month';
 
 type Props = {
   setModal: Dispatch<SetStateAction<boolean>>;
@@ -10,9 +13,13 @@ type Props = {
 interface FormData {
   alias: string;
   categories: string[];
+  day: number;
+  month: number;
+  year: number;
 }
-const AddModal: React.FC<Props> = ({ setModal }) => {
+const AddModal: React.FC<Props> = observer(({ setModal }) => {
   const { addTask, activeCategory, categories } = TaskStore;
+  const { monthDays, todayDay, months, yearInterval, setMonthIndex } = CalendarStore;
   const { enqueueSnackbar } = useSnackbar();
   const modalRef = useRef<HTMLDivElement>(null);
   useOnClickOutside(modalRef, () => setModal(false));
@@ -20,12 +27,20 @@ const AddModal: React.FC<Props> = ({ setModal }) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({ mode: 'onBlur' });
-  const onSubmit: SubmitHandler<FormData> = ({ alias, categories }) => {
+  } = useForm<FormData>({
+    mode: 'onBlur',
+    defaultValues: {
+      day: todayDay.getDate(),
+      month: todayDay.getMonth() + 1,
+      year: todayDay.getFullYear(),
+    },
+  });
+  const onSubmit: SubmitHandler<FormData> = ({ alias, categories, day, year, month }) => {
     if (!Array.isArray(categories)) categories = [categories];
     setModal(false);
-    addTask({ alias, categories });
+    addTask({ alias, categories, day, year, month });
     enqueueSnackbar('Задача успешно добавлена', { variant: 'success' });
+    setMonthIndex(todayDay.getMonth() + 1);
   };
   return (
     <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center backdrop-blur-xs">
@@ -54,7 +69,7 @@ const AddModal: React.FC<Props> = ({ setModal }) => {
             )}
           </div>
           <div className="text-left mt-5">Выберите категории</div>
-          <div className="h-full mt-1 grid grid-cols-4 gap-3">
+          <div className="mt-1 grid grid-cols-4 gap-3">
             {categories.map((category) => (
               <div key={category} className="flex">
                 <label>
@@ -70,6 +85,26 @@ const AddModal: React.FC<Props> = ({ setModal }) => {
               </div>
             ))}
           </div>
+          <div className="h-[25px]">
+            <select {...register('day')} className="cursor-pointer">
+              {monthDays.map((day) => (
+                <option key={day.dayNumber}>{day.dayNumber}</option>
+              ))}
+            </select>
+            <select
+              {...register('month')}
+              onChange={(e) => setMonthIndex(e.target.selectedIndex)}
+              disabled={false}>
+              {months.map((month) => (
+                <option key={month}>{month}</option>
+              ))}
+            </select>
+            <select {...register('year')}>
+              {yearInterval.map((year) => (
+                <option key={year}>{year}</option>
+              ))}
+            </select>
+          </div>
           <button
             className="border bg-green-300 p-2 rounded-md hover:bg-green-500 transition-colors "
             type="submit">
@@ -79,6 +114,6 @@ const AddModal: React.FC<Props> = ({ setModal }) => {
       </div>
     </div>
   );
-};
+});
 
 export default AddModal;

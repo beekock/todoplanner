@@ -1,3 +1,4 @@
+import { observer } from 'mobx-react-lite';
 import { useSnackbar } from 'notistack';
 import React, { Dispatch, SetStateAction, useRef } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
@@ -10,7 +11,7 @@ type Props = {
 interface FormData {
   category: string;
 }
-const AddCategoryModal: React.FC<Props> = ({ setModal }) => {
+const AddCategoryModal: React.FC<Props> = observer(({ setModal }) => {
   const { addCategory, categories } = TaskStore;
   const { enqueueSnackbar } = useSnackbar();
   const modalRef = useRef<HTMLDivElement>(null);
@@ -59,6 +60,6 @@ const AddCategoryModal: React.FC<Props> = ({ setModal }) => {
       </div>
     </div>
   );
-};
+});
 
 export default AddCategoryModal;

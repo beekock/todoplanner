@@ -1,25 +1,31 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
-import { createPortal } from 'react-dom';
 import CalendarStore from '../store/CalendarStore';
-import { getYear } from '../utils/dayjs';
-import DayCard from './modals/DayCard';
 
-export const CalendarHeader = observer(() => {
-  const { monthIndex, incMonthIndex, decMonthIndex, resetMonthIndex, toggleCardOpen } =
-    CalendarStore;
-  const handleClickToday = () => {
-    toggleCardOpen();
-    resetMonthIndex();
-  };
+const CalendarHeader = observer(() => {
+  const { decMonthIndex, incMonthIndex, monthName, resetMonthIndex } = CalendarStore;
   return (
-    <div className="flex my-1 mx-auto w-full justify-between h-50 border-b border-black p-5">
-      <div>
-        <button onClick={() => handleClickToday()}>Сегодня</button>
+    <div className="h-[50px] flex items-center justify-center border-black border-b">
+      <div className="flex justify-between w-full px-5">
+        <button
+          onClick={() => resetMonthIndex()}
+          className="px-4 border border-black rounded-lg bg-green-300 hover:bg-green-500 transition-colors">
+          Сегодня
+        </button>
+        <button
+          onClick={() => decMonthIndex()}
+          className="px-4 border border-black rounded-lg bg-green-300 hover:bg-green-500 transition-colors">
+          Предыдущий месяц
+        </button>
+        <button
+          onClick={() => incMonthIndex()}
+          className="px-4 border border-black rounded-lg bg-green-300 hover:bg-green-500 transition-colors">
+          Следующий месяц
+        </button>
+        <div className="w-[150px]">{monthName}</div>
       </div>
-      <button onClick={() => decMonthIndex()}>Назад</button>
-      <button onClick={() => incMonthIndex()}>Вперед</button>
-      <h3>{getYear(monthIndex)}</h3>
     </div>
   );
 });
+
+export default CalendarHeader;

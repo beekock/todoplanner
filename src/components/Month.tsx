@@ -1,25 +1,39 @@
-import { Dayjs } from 'dayjs';
 import { observer } from 'mobx-react-lite';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import CalendarStore from '../store/CalendarStore';
-import { getMonthMatrix } from '../utils/dayjs';
 import Day from './Day';
 
-const Month: React.FC = observer(() => {
-  const [currentMonth, setCurrentMonth] = useState(getMonthMatrix());
-  const { monthIndex } = CalendarStore;
-  useEffect(() => {
-    setCurrentMonth(getMonthMatrix(monthIndex));
-  }, [monthIndex]);
+const Month = observer(() => {
+  const { monthMatrix } = CalendarStore;
+  const daysOfWeek = [
+    'Понедельник',
+    'Вторник',
+    'Среда',
+    'Четверг',
+    'Пятница',
+    'Суббота',
+    'Воскресенье',
+  ];
   return (
-    <div className="grid grid-cols-7">
-      {currentMonth.map((row: Dayjs[], i: number) => (
-        <React.Fragment key={i}>
-          {row.map((day: Dayjs, index: number) => (
-            <Day day={day} key={index} row={i} monthIndex={monthIndex} />
-          ))}
-        </React.Fragment>
-      ))}
+    <div>
+      <div className="grid grid-cols-7">
+        {daysOfWeek.map((day) => (
+          <div key={day}>{day}</div>
+        ))}
+      </div>
+      <div>
+        {monthMatrix.map((row: Date[], i: number) => (
+          <React.Fragment key={i}>
+            <div className="grid grid-cols-7">
+              {row.map((day: Date, index: number) => (
+                <React.Fragment key={index}>
+                  <Day day={day} />
+                </React.Fragment>
+              ))}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 });

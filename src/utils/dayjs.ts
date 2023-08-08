@@ -4,6 +4,7 @@ import weekday from 'dayjs/plugin/weekday';
 
 import { DAY_FORMAT } from '../@types/calendarTypes';
 import Month from '../components/Month';
+import TaskStore from '../store/TaskStore';
 
 dayjs.extend(weekday);
 
@@ -38,7 +39,28 @@ export const getCurrentDay = () => {
 export const getMonthIndexFromZeroToEleven = (monthIndex: number) => {
   return dayjs().month(monthIndex).month();
 };
+export const getFormatedDate = (date: string) => {
+  let day = date.slice(-2, date.length);
+  if (+day < 10) day = day.slice(1, 2);
+  let month = date.slice(-5, -3);
+  let year = date.slice(0, 4);
 
+  return { day, month, year };
+};
+export const getMonthsArray = () => {
+  const monthsArray = [];
+  for (let i = 1; i <= 12; i++) {
+    monthsArray.push(i);
+  }
+  return monthsArray;
+};
+export const getYearsArray = () => {
+  const yearsArray = [];
+  for (let i = 2023; i <= 2040; i++) {
+    yearsArray.push(i);
+  }
+  return yearsArray;
+};
 export const convertDateToNumber = (date: string) => {
   const splitDate = date.split('-');
   const [year, month, day] = splitDate;

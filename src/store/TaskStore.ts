@@ -2,6 +2,7 @@ import { action, computed, makeObservable, observable, runInAction } from 'mobx'
 
 import { fetchTasks, Task } from '../api/fetchTasks';
 import { fetchCategories } from '../api/fetchCategories';
+import { dayComparsion } from '../utils/dateHelper';
 
 class TaskStore {
   @observable tasks: Task[] = [];
@@ -20,10 +21,11 @@ class TaskStore {
     localStorage.setItem(key, JSON.stringify(data));
   };
   @action getData = async () => {
+    localStorage.clear();
     this.fetchStatus = 'pending';
     const tasks = localStorage.getItem('tasks');
     const categories = localStorage.getItem('categories');
-    if (tasks && categories) {
+    if (tasks && categories && tasks.length > 0) {
       this.tasks = JSON.parse(tasks);
       this.categories = JSON.parse(categories);
     } else {
@@ -31,7 +33,12 @@ class TaskStore {
         const tasks = await fetchTasks();
         const categories = await fetchCategories();
         runInAction(() => {
-          this.tasks = tasks;
+          this.tasks = tasks.map((task) => {
+            return {
+              ...task,
+              date: new Date(),
+            };
+          });
           this.categories = categories;
           this.syncWithLS('categories', this.categories);
           this.syncWithLS('tasks', this.tasks);
@@ -62,7 +69,19 @@ class TaskStore {
     this.setActiveCategory('');
     this.syncWithLS('tasks', this.tasks);
   };
-  @action addTask = ({ alias, categories }: { alias: string; categories: string[] }) => {
+  @action addTask = ({
+    alias,
+    categories,
+    day,
+    year,
+    month,
+  }: {
+    alias: string;
+    categories: string[];
+    day: number;
+    year: number;
+    month: number;
+  }) => {
     this.tasks = [
       ...this.tasks,
       {
@@ -71,6 +90,7 @@ class TaskStore {
         isDone: false,
         categories,
         description: '',
+        date: new Date(year, month - 1, day),
       },
     ];
     this.syncWithLS('tasks', this.tasks);
@@ -84,7 +104,6 @@ class TaskStore {
   @action deleteCategory = (title: string) => {
     this.tasks = this.tasks.map((task) => {
       task.categories = task.categories?.filter((category) => category !== title);
-
       return task;
     });
     this.syncWithLS('tasks', this.tasks);
@@ -99,15 +118,19 @@ class TaskStore {
     }
     this.syncWithLS('tasks', this.tasks);
   };
-  @action updateTask = (id: number, { alias, categories, description }: Task) => {
+  @action updateTask = ({ id, alias, categories, description, date }: Task) => {
     const index = this.tasks.findIndex((target) => target.id === id);
-    if (Array.isArray(categories)) categories = [...categories];
+    if (!Array.isArray(categories)) categories = [categories];
     if (index !== -1) {
       this.tasks[index].alias = alias;
       this.tasks[index].categories = categories;
       this.tasks[index].description = description;
+      this.tasks[index].date = date;
     }
     this.syncWithLS('tasks', this.tasks);
+  };
+  @action getTasksAtDay = (day: Date) => {
+    return this.tasks.filter((task) => dayComparsion(task.date, day));
   };
 }
 export default new TaskStore();
