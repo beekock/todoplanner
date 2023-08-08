@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 import { useSnackbar } from 'notistack';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { Task } from '../../api/fetchTasks';

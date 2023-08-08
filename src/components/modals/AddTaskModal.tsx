@@ -5,7 +5,6 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import CalendarStore from '../../store/CalendarStore';
 import TaskStore from '../../store/TaskStore';
 import { useOnClickOutside } from '../../utils/useOnClickOutside';
-import Month from '../Month';
 
 type Props = {
   setModal: Dispatch<SetStateAction<boolean>>;

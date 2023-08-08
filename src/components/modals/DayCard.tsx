@@ -21,7 +21,7 @@ const DayCard: React.FC<Props> = observer(({ day, setModal }) => {
         <button className="absolute top-0 left-0 p-2" onClick={() => setModal(false)}>
           X
         </button>
-        <h4>{day.toLocaleString('ru', { day: '2-digit', month: 'long' })}</h4>
+        <h4>{day.toLocaleString('ru', { day: '2-digit', month: 'long', year: 'numeric' })}</h4>
         {getTasksAtDay(day).map((task) => (
           <TaskComponent task={task} />
         ))}

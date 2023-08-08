@@ -7,7 +7,7 @@ import CalendarStore from '../store/CalendarStore';
 import TaskStore from '../store/TaskStore';
 import { dayComparsion, daysNotThisMonth } from '../utils/dateHelper';
 import DayCard from './modals/DayCard';
-
+import check from '../assets/check.svg';
 interface DayProps {
   day: Date;
 }
@@ -41,7 +41,9 @@ const Day: React.FC<DayProps> = observer(({ day }) => {
             {tasksAtDay.map((task) => (
               <div
                 className="w-4 h-4 border border-black rounded-full bg-green-300 opacity-100"
-                key={task.alias}></div>
+                key={task.alias}>
+                {task.isDone && <img src={check} alt="check-ico" className="p-0.5"></img>}
+              </div>
             ))}
           </div>
         </div>

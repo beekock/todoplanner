@@ -1,4 +1,3 @@
-import { isConstructorDeclaration } from 'typescript';
 import CalendarStore from '../store/CalendarStore';
 
 interface CreateProps {
