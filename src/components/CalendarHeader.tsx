@@ -5,7 +5,7 @@ import CalendarStore from '../store/CalendarStore';
 const CalendarHeader = observer(() => {
   const { decMonthIndex, incMonthIndex, monthName, resetMonthIndex } = CalendarStore;
   return (
-    <div className="h-[50px] flex items-center justify-center border-black border-b">
+    <div className="h-[50px] flex items-center justify-center border-black border-b dark:bg-darkblue">
       <div className="flex justify-between w-full px-5">
         <button
           onClick={() => resetMonthIndex()}

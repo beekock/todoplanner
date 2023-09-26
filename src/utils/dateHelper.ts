@@ -35,11 +35,25 @@ export const createDate = (props: CreateProps) => {
 };
 export const dayComparsion = (day1: Date, day2: Date) => {
   return (
-    day1.toLocaleString('ru', { day: 'numeric', month: 'numeric', year: 'numeric' }) ===
-    day2.toLocaleString('ru', { day: 'numeric', month: 'numeric', year: 'numeric' })
+    day1.toLocaleString('ru', { day: '2-digit', month: '2-digit', year: '2-digit' }) ===
+    day2.toLocaleString('ru', { day: '2-digit', month: '2-digit', year: '2-digit' })
   );
 };
 export const daysNotThisMonth = (day: Date) => {
   const { monthIndex } = CalendarStore;
   return day.getMonth() !== monthIndex;
+};
+
+export const checkMobileWeeks = (isMobile: boolean) => {
+  const daysOfWeek = [
+    'Понедельник',
+    'Вторник',
+    'Среда',
+    'Четверг',
+    'Пятница',
+    'Суббота',
+    'Воскресенье',
+  ];
+  const daysOfWeekShort = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'];
+  return isMobile ? daysOfWeekShort : daysOfWeek;
 };

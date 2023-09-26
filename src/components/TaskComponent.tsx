@@ -36,7 +36,7 @@ const TaskComponent: React.FC<Props> = observer(({ task }) => {
           {task.alias}
         </div>
         <button
-          className="ml-4 border border-black rounded-full w-8 h-8 hover:bg-slate-400 transition-colors"
+          className="ml-4 border border-black rounded-full w-8 h-8 hover:bg-slate-400 transition-colors dark:border-white"
           onClick={() => setModal(true)}>
           X
         </button>

@@ -1,5 +1,5 @@
 import clsx from 'clsx';
-import { observer } from 'mobx-react-lite';
+import { observer, useObserver } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { Task } from '../api/fetchTasks';
@@ -13,8 +13,8 @@ interface DayProps {
 }
 
 const Day: React.FC<DayProps> = observer(({ day }) => {
-  const { todayDay, selectDay, selectedDay, monthIndex } = CalendarStore;
-  const { getTasksAtDay } = TaskStore;
+  const { todayDay, selectDay, selectedDay, monthIndex, year } = CalendarStore;
+  const { getTasksAtDay, tasks } = TaskStore;
   const [tasksAtDay, setTasksAtDay] = useState<Task[]>([]);
   const [isModal, setModal] = useState(false);
   const handleClickOnDay = () => {
@@ -23,7 +23,7 @@ const Day: React.FC<DayProps> = observer(({ day }) => {
   };
   useEffect(() => {
     setTasksAtDay(getTasksAtDay(day));
-  }, [monthIndex]);
+  }, [tasks, monthIndex, year]);
   return (
     <>
       <div className="flex flex-col">
@@ -31,16 +31,15 @@ const Day: React.FC<DayProps> = observer(({ day }) => {
           className={clsx(
             (dayComparsion(day, todayDay) && 'bg-slate-400') ||
               (daysNotThisMonth(day) && 'opacity-30') ||
-              (dayComparsion(day, selectedDay) &&
-                'text-purple-300 border border-purple-300 rounded-full'),
-            'h-[110px] flex flex-col items-center justify-center cursor-pointer hover:bg-slate-300 transition-all hover:opacity-100',
+              (dayComparsion(day, selectedDay) && 'text-purple-300 border border-purple-300 '),
+            'flex flex-col items-center justify-center cursor-pointer hover:bg-slate-300 rounded-lg transition-all hover:opacity-100 h-28',
           )}
           onClick={() => handleClickOnDay()}>
-          <span>{day.toLocaleString('ru', { day: 'numeric' })}</span>
-          <div className="flex">
+          <span className="text-center">{day.toLocaleString('ru', { day: 'numeric' })}</span>
+          <div className="flex flex-wrap overflow-hidden p-1">
             {tasksAtDay.map((task) => (
               <div
-                className="w-4 h-4 border border-black rounded-full bg-green-300 opacity-100"
+                className="w-3 h-3 border border-black rounded-full bg-green-300 opacity-100 md:w-4 md:h-4"
                 key={task.alias}>
                 {task.isDone && <img src={check} alt="check-ico" className="p-0.5"></img>}
               </div>

@@ -119,14 +119,9 @@ class TaskStore {
     this.syncWithLS('tasks', this.tasks);
   };
   @action updateTask = ({ id, alias, categories, description, date }: Task) => {
-    const index = this.tasks.findIndex((target) => target.id === id);
+    this.tasks = this.tasks.filter((target) => target.id !== id);
     if (!Array.isArray(categories)) categories = [categories];
-    if (index !== -1) {
-      this.tasks[index].alias = alias;
-      this.tasks[index].categories = categories;
-      this.tasks[index].description = description;
-      this.tasks[index].date = date;
-    }
+    this.tasks = [...this.tasks, { id, alias, categories, description, date }];
     this.syncWithLS('tasks', this.tasks);
   };
   @action getTasksAtDay = (day: Date) => {

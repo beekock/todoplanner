@@ -15,7 +15,7 @@ const AddCategoryModal: React.FC<Props> = observer(({ setModal }) => {
   const { addCategory, categories } = TaskStore;
   const { enqueueSnackbar } = useSnackbar();
   const modalRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(modalRef, () => setModal(false));
+
   const {
     register,
     handleSubmit,
@@ -29,10 +29,10 @@ const AddCategoryModal: React.FC<Props> = observer(({ setModal }) => {
   return (
     <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center backdrop-blur-xs">
       <div
-        className="mx-auto border border-black rounded-md p-2 w-[250px] max-h-[200px] h-full z-100 bg-blue-400 flex flex-col justify-between"
+        className="mx-auto border border-black dark:border-slate-500 rounded-md p-2 w-[250px] max-h-[200px] h-full z-100 bg-blue-400 flex flex-col justify-between dark:bg-darkblue"
         ref={modalRef}>
         <button
-          className="mr-0 ml-auto w-10 h-10 rounded-full border border-black items-center flex justify-center hover:bg-blue-500 transition-colors"
+          className="mr-0 ml-auto w-10 h-10 rounded-full border border-black items-center dark:hover:bg-slate-500 flex justify-center hover:bg-blue-500 transition-colors dark:text-white dark:border-white"
           onClick={() => setModal(false)}>
           X
         </button>
@@ -42,7 +42,7 @@ const AddCategoryModal: React.FC<Props> = observer(({ setModal }) => {
             <input
               type="text"
               placeholder="Введите имя категории"
-              className="text-center mt-5 border-black border w-full rounded-md h-8"
+              className="text-center mt-5 border-black border w-full rounded-md h-8 dark:bg-darkblue dark:text-white dark:border-white "
               {...register('category', {
                 validate: (value) =>
                   !categories.includes(value) || 'Категория с таким именем уже существует',
@@ -53,7 +53,7 @@ const AddCategoryModal: React.FC<Props> = observer(({ setModal }) => {
           </div>
           <button
             type="submit"
-            className="border border-black rounded-md bg-green-300 hover:bg-green-600 transition-all">
+            className="border border-black rounded-md bg-green-300 hover:bg-green-600 transition-all dark:bg-darkblue dark:text-white dark:border-white dark:hover:bg-slate-500">
             Добавить
           </button>
         </form>

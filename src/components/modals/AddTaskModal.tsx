@@ -8,6 +8,7 @@ import { useOnClickOutside } from '../../utils/useOnClickOutside';
 
 type Props = {
   setModal: Dispatch<SetStateAction<boolean>>;
+  day?: Date;
 };
 interface FormData {
   alias: string;
@@ -16,12 +17,21 @@ interface FormData {
   month: number;
   year: number;
 }
-const AddModal: React.FC<Props> = observer(({ setModal }) => {
+const AddModal: React.FC<Props> = observer(({ setModal, day }) => {
   const { addTask, activeCategory, categories } = TaskStore;
-  const { monthDays, todayDay, months, yearInterval, setMonthIndex } = CalendarStore;
+  const { onChangeMonthDays, todayDay, months, yearInterval, setMonthIndex, selectedDay } =
+    CalendarStore;
   const { enqueueSnackbar } = useSnackbar();
   const modalRef = useRef<HTMLDivElement>(null);
-  useOnClickOutside(modalRef, () => setModal(false));
+  const defaultValues = () => {
+    return selectedDay
+      ? {
+          day: selectedDay?.getDate(),
+          month: selectedDay?.getMonth(),
+          year: selectedDay?.getFullYear(),
+        }
+      : { day: todayDay.getDate(), month: todayDay.getMonth() + 1, year: todayDay.getFullYear() };
+  };
   const {
     register,
     handleSubmit,
@@ -29,9 +39,9 @@ const AddModal: React.FC<Props> = observer(({ setModal }) => {
   } = useForm<FormData>({
     mode: 'onBlur',
     defaultValues: {
-      day: todayDay.getDate(),
-      month: todayDay.getMonth() + 1,
-      year: todayDay.getFullYear(),
+      day: defaultValues().day,
+      month: defaultValues().month + 1,
+      year: defaultValues().year,
     },
   });
   const onSubmit: SubmitHandler<FormData> = ({ alias, categories, day, year, month }) => {
@@ -39,7 +49,7 @@ const AddModal: React.FC<Props> = observer(({ setModal }) => {
     setModal(false);
     addTask({ alias, categories, day, year, month });
     enqueueSnackbar('Задача успешно добавлена', { variant: 'success' });
-    setMonthIndex(todayDay.getMonth() + 1);
+    setMonthIndex(selectedDay ? selectedDay.getMonth() : todayDay.getMonth() + 1);
   };
   return (
     <div className="w-full h-full absolute top-0 left-0 flex items-center justify-center backdrop-blur-xs">
@@ -86,7 +96,7 @@ const AddModal: React.FC<Props> = observer(({ setModal }) => {
           </div>
           <div className="h-[25px]">
             <select {...register('day')} className="cursor-pointer">
-              {monthDays.map((day) => (
+              {onChangeMonthDays.map((day) => (
                 <option key={day.dayNumber}>{day.dayNumber}</option>
               ))}
             </select>

@@ -24,7 +24,8 @@ interface FormData {
 }
 const TaskCard: React.FC<Props> = observer(({ task, setCard }) => {
   const { categories, updateTask } = TaskStore;
-  const { monthDays, setMonthIndex, months, yearInterval, todayDay } = CalendarStore;
+  const { onChangeMonthDays, setOnChangeMonthIndex, months, yearInterval, todayDay } =
+    CalendarStore;
   const [isEdit, setEdit] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
@@ -53,7 +54,6 @@ const TaskCard: React.FC<Props> = observer(({ task, setCard }) => {
       description,
       date: new Date(year, month - 1, day),
     });
-    setMonthIndex(todayDay.getMonth() + 1);
     setCard(false);
     enqueueSnackbar('Задача успешно изменена', { variant: 'success' });
   };
@@ -105,11 +105,14 @@ const TaskCard: React.FC<Props> = observer(({ task, setCard }) => {
           <div>
             <label>Выберите дату</label>
             <select {...register('day')} disabled={!isEdit}>
-              {monthDays.map((day) => (
+              {onChangeMonthDays.map((day) => (
                 <option key={day.dayNumber}>{day.dayNumber}</option>
               ))}
             </select>
-            <select {...register('month')} disabled={!isEdit}>
+            <select
+              {...register('month')}
+              disabled={!isEdit}
+              onChange={(e) => setOnChangeMonthIndex(+e.target.value)}>
               {months.map((month) => (
                 <option key={month}>{month}</option>
               ))}

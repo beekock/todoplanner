@@ -8,7 +8,7 @@ import { useAutoAnimate } from '@formkit/auto-animate/react';
 import CompletedTasksComponent from '../components/CompletedTasksComponent';
 import DoneTaskToggler from '../components/DoneTaskToggler';
 import { createPortal } from 'react-dom';
-
+import AddButton from '../components/AddButton';
 const ToDoPage: React.FC = observer(() => {
   const { filteredTasks } = TaskStore;
   const [parent] = useAutoAnimate();
@@ -16,19 +16,15 @@ const ToDoPage: React.FC = observer(() => {
   const [isDoneOpen, setDoneOpen] = useState(false);
 
   return (
-    <section className="flex justify-between h-full">
+    <section className="flex flex-col md:justify-between md:flex-row h-full dark:bg-darkblue bg-primary text-white border-white">
       <Categories />
       <div className="w-full p-5" ref={parent}>
         {filteredTasks.length > 0 ? (
           filteredTasks.map((task) => <TaskComponent task={task} key={task.id} />)
         ) : (
-          <h4> Нет задач</h4>
+          <h4 className="text-2xl"> Нет задач</h4>
         )}
-        {isModal ? (
-          createPortal(<AddTaskModal setModal={setModal} />, document.body)
-        ) : (
-          <button onClick={() => setModal(true)}>+ Добавить задачу</button>
-        )}
+        <AddButton />
         <DoneTaskToggler toggleDoneOpened={setDoneOpen} opened={isDoneOpen} />
         {isDoneOpen && (
           <CompletedTasksComponent toggleDoneOpened={setDoneOpen} opened={isDoneOpen} />

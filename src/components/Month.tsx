@@ -1,27 +1,22 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react';
 import CalendarStore from '../store/CalendarStore';
+import UiStore from '../store/UiStore';
+import { checkMobileWeeks } from '../utils/dateHelper';
 import Day from './Day';
 
 const Month = observer(() => {
   const { monthMatrix } = CalendarStore;
-  const daysOfWeek = [
-    'Понедельник',
-    'Вторник',
-    'Среда',
-    'Четверг',
-    'Пятница',
-    'Суббота',
-    'Воскресенье',
-  ];
+  const { isMobile } = UiStore;
+
   return (
-    <div>
+    <div className="h-full mt-5">
       <div className="grid grid-cols-7">
-        {daysOfWeek.map((day) => (
+        {checkMobileWeeks(isMobile).map((day) => (
           <div key={day}>{day}</div>
         ))}
       </div>
-      <div>
+      <div className="h-full ">
         {monthMatrix.map((row: Date[], i: number) => (
           <React.Fragment key={i}>
             <div className="grid grid-cols-7">

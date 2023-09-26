@@ -25,14 +25,14 @@ const CategoryComponent: React.FC<Props> = observer(({ category }) => {
   return (
     <div
       className={clsx(
-        activeCategory === category ? 'bg-slate-300' : '',
-        'cursor-pointer mb-2 py-1 px-2 flex justify-between hover:bg-slate-400 transition-colors',
+        activeCategory === category && 'bg-slate-300 dark:bg-slate-500',
+        'cursor-pointer md:mb-2 py-1 px-2 flex justify-between hover:bg-slate-400 dark:hover:bg-slate-500 transition-colors rounded-lg w-24 md:w-full border-r dark:border-white',
       )}
       onClick={() => onClickCategory(category)}>
       <div className="">{category}</div>
       <div ref={deleteRef}>
         <button
-          className="cursor-pointer hover:font-bold transition-all"
+          className="cursor-pointer hover:font-bold transition-all ml-4"
           onClick={() => onClickDeleteCategory()}>
           X
         </button>
