@@ -19,7 +19,7 @@ function App() {
 
   return (
     <div
-      className="h-full max-w-[1076px] my-0 mx-auto border border-black rounded-sm flex flex-col"
+      className="h-full max-w-[1100px] my-0 mx-auto border border-black rounded-sm flex flex-col"
       id="app">
       <SnackbarProvider
         autoHideDuration={5000}
